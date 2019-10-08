@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'libdivvunspell'
-  s.version          = '0.1.0'
+  s.version          = '0.1.1'
   s.summary          = 'A short description of libdivvunspell.'
 
 # This description is used to generate tags and improve search results.
@@ -43,7 +43,6 @@ TODO: Add long description of the pod here.
   ]
   s.preserve_paths = "libdivvunspell/divvunspell"
   s.source_files = 'libdivvunspell/Classes/**/*'
-  s.libraries = 'divvunspell'
   s.vendored_libraries = 'libdivvunspell/divvunspell/target/universal/release/libdivvunspell.a'
   s.public_header_files = 'libdivvunspell/Classes/**/*.h'
 #  s.static_framework = true
