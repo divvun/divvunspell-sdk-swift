@@ -1,0 +1,6 @@
+[submodule "libdivvunspell/--branch"]
+	path = libdivvunspell/--branch
+	url = https://github.com/divvun/divvunspell
+[submodule "libdivvunspell/divvunspell"]
+	path = libdivvunspell/divvunspell
+	url = https://github.com/divvun/divvunspell

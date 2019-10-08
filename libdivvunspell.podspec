@@ -26,17 +26,25 @@ TODO: Add long description of the pod here.
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Brendan Molloy' => 'brendan@technocreatives.com' }
   s.source           = { :git => 'https://github.com/Brendan Molloy/libdivvunspell.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '8.0'
-
+  s.pod_target_xcconfig = {
+    'CARGO_HOME': "$(HOME)/.cargo",
+    'CARGO_FEATURES': "ffi",
+    'LIBRARY_SEARCH_PATHS': '"${SRCROOT}/libdivvunspell/divvunspell/target/universal/release"'
+  }
+  s.script_phases = [
+    {
+      :name => "Build libdivvunspell with Cargo",
+      :execution_position => :before_compile,
+      :script => "pushd ${SRCROOT}/../../libdivvunspell/divvunspell/divvunspell && make xcodelipo",
+      :shell_path => "/bin/sh"
+    }
+  ]
+  s.preserve_paths = "libdivvunspell/divvunspell"
   s.source_files = 'libdivvunspell/Classes/**/*'
-  
-  # s.resource_bundles = {
-  #   'libdivvunspell' => ['libdivvunspell/Assets/*.png']
-  # }
-
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+  s.libraries = 'divvunspell'
+  s.vendored_libraries = 'libdivvunspell/divvunspell/target/universal/release/libdivvunspell.a'
+  s.public_header_files = 'libdivvunspell/Classes/**/*.h'
+#  s.static_framework = true
 end
