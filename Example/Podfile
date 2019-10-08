@@ -1,0 +1,6 @@
+use_frameworks!
+target 'libdivvunspell_Tests' do
+  pod 'libdivvunspell', :path => '../'
+  
+  
+end
