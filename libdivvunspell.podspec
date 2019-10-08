@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
   s.name             = 'libdivvunspell'
   s.version          = '0.1.1'
   s.summary          = 'A short description of libdivvunspell.'
-
+  s.swift_versions = "5.0"
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
 #   * Try to keep it short, snappy and to the point.
@@ -21,11 +21,10 @@ Pod::Spec.new do |s|
 TODO: Add long description of the pod here.
                        DESC
 
-  s.homepage         = 'https://github.com/Brendan Molloy/libdivvunspell'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
-  s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'Brendan Molloy' => 'brendan@technocreatives.com' }
-  s.source           = { :git => 'https://github.com/Brendan Molloy/libdivvunspell.git', :tag => s.version.to_s }
+  s.homepage         = 'https://github.com/bbqsrc/divvunspell-swift'
+  s.license          = { :type => 'Apache-2.0 OR MIT' }
+  s.author           = { 'Brendan Molloy' => 'brendan@bbqsrc.net' }
+  s.source           = { :git => 'https://github.com/bbqsrc/divvunspell-swift.git', :submodules => true, :tag => s.version.to_s }
 
   s.ios.deployment_target = '8.0'
   s.pod_target_xcconfig = {
