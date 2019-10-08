@@ -31,13 +31,13 @@ TODO: Add long description of the pod here.
   s.pod_target_xcconfig = {
     'CARGO_HOME': "$(HOME)/.cargo",
     'CARGO_FEATURES': "ffi",
-    'LIBRARY_SEARCH_PATHS': '"${SRCROOT}/libdivvunspell/divvunspell/target/universal/release"'
+    'LIBRARY_SEARCH_PATHS': '"${PODS_TARGET_SRCROOT}/libdivvunspell/divvunspell/target/universal/release"'
   }
   s.script_phases = [
     {
       :name => "Build libdivvunspell with Cargo",
       :execution_position => :before_compile,
-      :script => "pushd ${SRCROOT}/../../libdivvunspell/divvunspell/divvunspell && make xcodelipo",
+      :script => "pushd ${PODS_TARGET_SRCROOT}/libdivvunspell/divvunspell/divvunspell && make xcodelipo",
       :shell_path => "/bin/sh"
     }
   ]
