@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'libdivvunspell'
-  s.version          = '0.1.1'
+  s.version          = '0.1.2'
   s.summary          = 'A short description of libdivvunspell.'
   s.swift_versions = "5.0"
 # This description is used to generate tags and improve search results.
