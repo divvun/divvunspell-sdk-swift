@@ -31,7 +31,8 @@ TODO: Add long description of the pod here.
     'CARGO_HOME': "$(HOME)/.cargo",
     'CARGO_FEATURES': "ffi",
     'LIBRARY_SEARCH_PATHS': '"${PODS_TARGET_SRCROOT}/libdivvunspell/divvunspell/target/universal/release"',
-    'OTHER_LDFLAGS': '-ldivvunspell'
+    'OTHER_LDFLAGS': '-ldivvunspell',
+    'ENABLE_BITCODE': 'NO'
   }
   s.script_phases = [
     {
