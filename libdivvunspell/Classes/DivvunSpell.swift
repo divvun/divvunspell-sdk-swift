@@ -38,13 +38,13 @@ public class ThfstChunkedBoxSpeller {
     }
     
     public func suggest(word: String) throws -> [String] {
-        let ptr = word.withCString {
+        let suggestions = word.withCString {
             divvun_thfst_chunked_box_speller_suggest(handle, $0, divvunspell_err_callback)
         }
         
         try check_error()
         
-        guard let suggestions = ptr else {
+        if suggestions.data == nil {
             return []
         }
         
@@ -72,10 +72,8 @@ public class ThfstChunkedBoxSpellerArchive {
     }
     
     public static func open(path: String) throws -> ThfstChunkedBoxSpellerArchive {
-        let pathData = path.data(using: .utf8)!
-        
-        let handle = pathData.withUnsafeBytes { (body: UnsafePointer<rust_path_t>) in
-            return divvun_thfst_chunked_box_speller_archive_open(body, divvunspell_err_callback)
+        let handle = path.withCString {
+            return divvun_thfst_chunked_box_speller_archive_open($0, divvunspell_err_callback)
         }
         
         try check_error()

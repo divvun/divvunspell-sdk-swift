@@ -19,6 +19,11 @@ extern "C" {
 typedef uint8_t rust_bool_t;
 typedef uintptr_t rust_usize_t;
 
+typedef struct rust_slice_s {
+    void*_Nullable data;
+    uintptr_t len;
+} rust_slice_t;
+
 #if _WIN32 
 typedef wchar_t rust_path_t;
 #else
@@ -64,7 +69,7 @@ divvun_thfst_chunked_box_speller_archive_speller(const void *_Nonnull handle, ER
 extern rust_bool_t
 divvun_thfst_chunked_box_speller_is_correct(const void *_Nonnull speller, const char *_Nonnull word, ERR_CALLBACK);
 
-extern const void *_Nullable
+extern const rust_slice_t
 divvun_thfst_chunked_box_speller_suggest(const void *_Nonnull speller, const char *_Nonnull word, ERR_CALLBACK);
 
 extern const void *_Nullable
@@ -75,10 +80,10 @@ divvun_thfst_chunked_box_speller_suggest_with_config(
     ERR_CALLBACK);
 
 extern rust_usize_t
-divvun_vec_suggestion_len(const void *_Nonnull suggestions, ERR_CALLBACK);
+divvun_vec_suggestion_len(const rust_slice_t suggestions, ERR_CALLBACK);
 
 const char*_Nullable divvun_vec_suggestion_get_value(
-    const void *_Nonnull suggestions,
+    const rust_slice_t suggestions,
     rust_usize_t index,
     ERR_CALLBACK);
 
