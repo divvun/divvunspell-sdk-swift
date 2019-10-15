@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct DivvunSpellError: Error {
-    let message: String
+public struct DivvunSpellError: Error {
+    public let message: String
 }
 
 private func check_error() throws {
@@ -57,7 +57,52 @@ public class ThfstChunkedBoxSpeller {
             let ptr = divvun_vec_suggestion_get_value(suggestions, i, divvunspell_err_callback)
             try check_error()
             out.append(String(cString: ptr!))
-//            divvun_vec_suggestion_value_free(ptr!)
+            divvun_string_free(ptr!)
+        }
+        
+        return out
+    }
+}
+
+public class HfstZipSpeller {
+    private let handle: UnsafeRawPointer
+    
+    fileprivate init(handle: UnsafeRawPointer) {
+        self.handle = handle
+    }
+    
+    public func isCorrect(word: String) throws -> Bool {
+        let result = word.withCString {
+            divvun_hfst_zip_speller_is_correct(
+                self.handle, $0, divvunspell_err_callback)
+        }
+        
+        try check_error()
+        
+        return result != 0
+    }
+    
+    public func suggest(word: String) throws -> [String] {
+        let suggestions = word.withCString {
+            divvun_hfst_zip_speller_suggest(handle, $0, divvunspell_err_callback)
+        }
+        
+        try check_error()
+        
+        if suggestions.data == nil {
+            return []
+        }
+        
+        let length = divvun_vec_suggestion_len(suggestions, divvunspell_err_callback)
+        try check_error()
+        
+        var out = [String]()
+        
+        for i in 0..<length {
+            let ptr = divvun_vec_suggestion_get_value(suggestions, i, divvunspell_err_callback)
+            try check_error()
+            out.append(String(cString: ptr!))
+            divvun_string_free(ptr!)
         }
         
         return out
@@ -87,5 +132,38 @@ public class ThfstChunkedBoxSpellerArchive {
         try check_error()
         
         return ThfstChunkedBoxSpeller(handle: spellerHandle!)
+    }
+}
+
+public class HfstZipSpellerArchive {
+    private let handle: UnsafeRawPointer
+    
+    public let locale: String
+    
+    private init(handle: UnsafeRawPointer, locale: String) {
+        self.handle = handle
+        self.locale = locale
+    }
+    
+    public static func open(path: String) throws -> HfstZipSpellerArchive {
+        let handle = path.withCString {
+            return divvun_hfst_zip_speller_archive_open($0, divvunspell_err_callback)
+        }
+        try check_error()
+        
+        let ptr = divvun_hfst_zip_speller_archive_locale(handle!, divvunspell_err_callback)
+        try check_error()
+        let locale = String(cString: ptr!)
+        divvun_string_free(ptr)
+        
+        return HfstZipSpellerArchive(handle: handle!, locale: locale)
+    }
+    
+    public func speller() throws -> HfstZipSpeller {
+        let spellerHandle = divvun_hfst_zip_speller_archive_speller(self.handle, divvunspell_err_callback)
+        
+        try check_error()
+        
+        return HfstZipSpeller(handle: spellerHandle!)
     }
 }
