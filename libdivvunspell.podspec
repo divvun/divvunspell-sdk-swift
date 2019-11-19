@@ -44,7 +44,7 @@ TODO: Add long description of the pod here.
     {
       :name => "Build libdivvunspell with Cargo",
       :execution_position => :before_compile,
-      :script => "pushd ${PODS_TARGET_SRCROOT}/libdivvunspell/divvunspell/divvunspell && make xcodelipo",
+      :script => "unset CARGO_TARGET_DIR && pushd ${PODS_TARGET_SRCROOT}/libdivvunspell/divvunspell/divvunspell && make xcodelipo",
       :shell_path => "/bin/sh"
     }
   ]
@@ -52,7 +52,7 @@ TODO: Add long description of the pod here.
     {
       :name => "Build libdivvunspell with Cargo",
       :execution_position => :before_compile,
-      :script => "pushd ${PODS_TARGET_SRCROOT}/libdivvunspell/divvunspell/divvunspell && ${CARGO_HOME}/bin/cargo build --lib --release --features ${CARGO_FEATURES} && rm ${PODS_TARGET_SRCROOT}/libdivvunspell/divvunspell/target/release/*.dylib",
+      :script => "unset CARGO_TARGET_DIR && pushd ${PODS_TARGET_SRCROOT}/libdivvunspell/divvunspell/divvunspell && ${CARGO_HOME}/bin/cargo build --lib --release --features ${CARGO_FEATURES} && rm ${PODS_TARGET_SRCROOT}/libdivvunspell/divvunspell/target/release/*.dylib",
       :shell_path => "/bin/sh"
     }
   ]
