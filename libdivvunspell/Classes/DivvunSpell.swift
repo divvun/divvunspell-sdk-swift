@@ -19,6 +19,63 @@ private func check_error() throws {
     }
 }
 
+public struct SliceIterator: IteratorProtocol {
+    private let slice: rust_slice_t
+    private var current: Int = 0
+    
+    public typealias Element = UInt8
+    
+    public mutating func next() -> UInt8? {
+        if current >= self.slice.len {
+            return nil
+        }
+        
+        let v = self.slice.data!
+            .assumingMemoryBound(to: UInt8.self)
+            .advanced(by: current)
+            .pointee
+        
+        self.current += 1
+        
+        return v
+    }
+    
+    init(_ slice: rust_slice_t) {
+        self.slice = slice
+    }
+}
+
+extension rust_slice_t: Sequence {
+    public typealias Element = UInt8
+    public typealias Iterator = SliceIterator
+    
+    public var underestimatedCount: Int {
+        return Int(self.len)
+    }
+    
+    public func makeIterator() -> SliceIterator {
+        return SliceIterator(self)
+    }
+}
+
+extension rust_slice_t: Collection {
+    public typealias Index = UInt
+    
+    public var startIndex: UInt { return 0 }
+    public var endIndex: UInt { return self.len }
+    
+    public func index(after i: UInt) -> UInt {
+        return i + 1
+    }
+    
+    public subscript(position: UInt) -> UInt8 {
+        return self.data!
+            .assumingMemoryBound(to: UInt8.self)
+            .advanced(by: Int(position))
+            .pointee
+    }
+}
+
 public class ThfstChunkedBoxSpeller {
     private let handle: UnsafeRawPointer
     
@@ -165,5 +222,36 @@ public class HfstZipSpellerArchive {
         try check_error()
         
         return HfstZipSpeller(handle: spellerHandle!)
+    }
+}
+
+public struct WordBoundIndices: IteratorProtocol, Sequence {
+    public typealias Element = (UInt64, String)
+    
+    public mutating func next() -> (UInt64, String)? {
+        var index: UInt64 = 0
+        var cString = UnsafeMutablePointer<CChar>.allocate(capacity: 0)
+        
+        if divvun_word_bound_indices_next(handle, &index, &cString) == 0 {
+            return nil
+        }
+        
+        defer { divvun_string_free(cString) }
+        let word = String(cString: cString)
+        return (index, word)
+    }
+    
+    private let string: [CChar]
+    private let handle: UnsafeMutableRawPointer
+    
+    fileprivate init(_ string: String) {
+        self.string = string.cString(using: .utf8)!
+        self.handle = divvun_word_bound_indices(&self.string)
+    }
+}
+
+public extension String {
+    func wordBoundIndices() -> WordBoundIndices {
+        return WordBoundIndices(self)
     }
 }

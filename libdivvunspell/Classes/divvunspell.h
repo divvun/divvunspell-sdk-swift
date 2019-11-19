@@ -140,13 +140,13 @@ divvun_vec_suggestion_get_value(
 extern void
 divvun_string_free(const char *_Nullable value);
 
-
-// TODO: this is temporary until a better tokenizer impl is written
 extern void *_Nonnull
-word_bound_indices(const char *_Nonnull utf8_string);
+divvun_word_bound_indices(const char *_Nonnull utf8_string);
 
 extern rust_bool_t
-word_bound_indices_next(const void *_Nonnull handle, uint64_t *_Nonnull out_index, char *_Nonnull *_Nonnull out_string);
+divvun_word_bound_indices_next(const void *_Nonnull handle,
+                               uint64_t *_Nonnull out_index,
+                               char *_Nonnull *_Nonnull out_string);
 
 extern void
 word_bound_indices_free(void *_Nonnull handle);
