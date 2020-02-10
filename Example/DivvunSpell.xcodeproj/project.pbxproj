@@ -8,18 +8,18 @@
 
 /* Begin PBXBuildFile section */
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
-		9D21BDD81B07F9F5C7E18BE1 /* Pods_libdivvunspell_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B22CB98C8766EAAA6F24CAFC /* Pods_libdivvunspell_Tests.framework */; };
+		9D21BDD81B07F9F5C7E18BE1 /* Pods_DivvunSpell_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B22CB98C8766EAAA6F24CAFC /* Pods_DivvunSpell_Tests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		124BC72B3729F187547D2305 /* Pods-libdivvunspell_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-libdivvunspell_Tests.release.xcconfig"; path = "Target Support Files/Pods-libdivvunspell_Tests/Pods-libdivvunspell_Tests.release.xcconfig"; sourceTree = "<group>"; };
-		607FACE51AFB9204008FA782 /* libdivvunspell_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = libdivvunspell_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		124BC72B3729F187547D2305 /* Pods-DivvunSpell_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DivvunSpell_Tests.release.xcconfig"; path = "Target Support Files/Pods-DivvunSpell_Tests/Pods-DivvunSpell_Tests.release.xcconfig"; sourceTree = "<group>"; };
+		607FACE51AFB9204008FA782 /* DivvunSpell_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DivvunSpell_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		93EE0250B69D62E89F1FA804 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
-		9AB8BDDCF1AAB18F8FFF9540 /* libdivvunspell.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = libdivvunspell.podspec; path = ../libdivvunspell.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		B22CB98C8766EAAA6F24CAFC /* Pods_libdivvunspell_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_libdivvunspell_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DF1B0359F35EB2A83C73D2A9 /* Pods-libdivvunspell_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-libdivvunspell_Tests.debug.xcconfig"; path = "Target Support Files/Pods-libdivvunspell_Tests/Pods-libdivvunspell_Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		9AB8BDDCF1AAB18F8FFF9540 /* DivvunSpell.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = DivvunSpell.podspec; path = ../DivvunSpell.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		B22CB98C8766EAAA6F24CAFC /* Pods_DivvunSpell_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DivvunSpell_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DF1B0359F35EB2A83C73D2A9 /* Pods-DivvunSpell_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DivvunSpell_Tests.debug.xcconfig"; path = "Target Support Files/Pods-DivvunSpell_Tests/Pods-DivvunSpell_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		E7C37C4A217F31DA87D9F026 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -28,7 +28,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9D21BDD81B07F9F5C7E18BE1 /* Pods_libdivvunspell_Tests.framework in Frameworks */,
+				9D21BDD81B07F9F5C7E18BE1 /* Pods_DivvunSpell_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -49,7 +49,7 @@
 		607FACD11AFB9204008FA782 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				607FACE51AFB9204008FA782 /* libdivvunspell_Tests.xctest */,
+				607FACE51AFB9204008FA782 /* DivvunSpell_Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -74,7 +74,7 @@
 		607FACF51AFB993E008FA782 /* Podspec Metadata */ = {
 			isa = PBXGroup;
 			children = (
-				9AB8BDDCF1AAB18F8FFF9540 /* libdivvunspell.podspec */,
+				9AB8BDDCF1AAB18F8FFF9540 /* DivvunSpell.podspec */,
 				E7C37C4A217F31DA87D9F026 /* README.md */,
 				93EE0250B69D62E89F1FA804 /* LICENSE */,
 			);
@@ -84,8 +84,8 @@
 		8B50382709823A803982E0EC /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				DF1B0359F35EB2A83C73D2A9 /* Pods-libdivvunspell_Tests.debug.xcconfig */,
-				124BC72B3729F187547D2305 /* Pods-libdivvunspell_Tests.release.xcconfig */,
+				DF1B0359F35EB2A83C73D2A9 /* Pods-DivvunSpell_Tests.debug.xcconfig */,
+				124BC72B3729F187547D2305 /* Pods-DivvunSpell_Tests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -93,7 +93,7 @@
 		D71656E4BFC27EA63C579803 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				B22CB98C8766EAAA6F24CAFC /* Pods_libdivvunspell_Tests.framework */,
+				B22CB98C8766EAAA6F24CAFC /* Pods_DivvunSpell_Tests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -101,9 +101,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		607FACE41AFB9204008FA782 /* libdivvunspell_Tests */ = {
+		607FACE41AFB9204008FA782 /* DivvunSpell_Tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 607FACF21AFB9204008FA782 /* Build configuration list for PBXNativeTarget "libdivvunspell_Tests" */;
+			buildConfigurationList = 607FACF21AFB9204008FA782 /* Build configuration list for PBXNativeTarget "DivvunSpell_Tests" */;
 			buildPhases = (
 				27D7BE15B337162AA7569BBF /* [CP] Check Pods Manifest.lock */,
 				607FACE11AFB9204008FA782 /* Sources */,
@@ -115,9 +115,9 @@
 			);
 			dependencies = (
 			);
-			name = libdivvunspell_Tests;
+			name = DivvunSpell_Tests;
 			productName = Tests;
-			productReference = 607FACE51AFB9204008FA782 /* libdivvunspell_Tests.xctest */;
+			productReference = 607FACE51AFB9204008FA782 /* DivvunSpell_Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -138,7 +138,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "libdivvunspell" */;
+			buildConfigurationList = 607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "DivvunSpell" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -152,7 +152,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				607FACE41AFB9204008FA782 /* libdivvunspell_Tests */,
+				607FACE41AFB9204008FA782 /* DivvunSpell_Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -183,7 +183,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-libdivvunspell_Tests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-DivvunSpell_Tests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -196,16 +196,16 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-libdivvunspell_Tests/Pods-libdivvunspell_Tests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/libdivvunspell/libdivvunspell.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-DivvunSpell_Tests/Pods-DivvunSpell_Tests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/DivvunSpell/DivvunSpell.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/libdivvunspell.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DivvunSpell.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-libdivvunspell_Tests/Pods-libdivvunspell_Tests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-DivvunSpell_Tests/Pods-DivvunSpell_Tests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -323,7 +323,7 @@
 		};
 		607FACF31AFB9204008FA782 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DF1B0359F35EB2A83C73D2A9 /* Pods-libdivvunspell_Tests.debug.xcconfig */;
+			baseConfigurationReference = DF1B0359F35EB2A83C73D2A9 /* Pods-DivvunSpell_Tests.debug.xcconfig */;
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
@@ -344,13 +344,13 @@
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/libdivvunspell_Example.app/libdivvunspell_Example";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DivvunSpell_Example.app/DivvunSpell_Example";
 			};
 			name = Debug;
 		};
 		607FACF41AFB9204008FA782 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 124BC72B3729F187547D2305 /* Pods-libdivvunspell_Tests.release.xcconfig */;
+			baseConfigurationReference = 124BC72B3729F187547D2305 /* Pods-DivvunSpell_Tests.release.xcconfig */;
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
@@ -367,14 +367,14 @@
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/libdivvunspell_Example.app/libdivvunspell_Example";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DivvunSpell_Example.app/DivvunSpell_Example";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "libdivvunspell" */ = {
+		607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "DivvunSpell" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				607FACED1AFB9204008FA782 /* Debug */,
@@ -383,7 +383,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		607FACF21AFB9204008FA782 /* Build configuration list for PBXNativeTarget "libdivvunspell_Tests" */ = {
+		607FACF21AFB9204008FA782 /* Build configuration list for PBXNativeTarget "DivvunSpell_Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				607FACF31AFB9204008FA782 /* Debug */,

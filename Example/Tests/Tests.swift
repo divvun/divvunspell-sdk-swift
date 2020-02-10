@@ -1,5 +1,5 @@
 import XCTest
-import libdivvunspell
+import DivvunSpell
 
 class Tests: XCTestCase {
     

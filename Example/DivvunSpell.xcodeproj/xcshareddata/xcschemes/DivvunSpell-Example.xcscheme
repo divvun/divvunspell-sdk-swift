@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-               BuildableName = "libdivvunspell_Example.app"
-               BlueprintName = "libdivvunspell_Example"
-               ReferencedContainer = "container:libdivvunspell.xcodeproj">
+               BuildableName = "DivvunSpell_Example.app"
+               BlueprintName = "DivvunSpell_Example"
+               ReferencedContainer = "container:DivvunSpell.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -29,9 +29,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "607FACE41AFB9204008FA782"
-               BuildableName = "libdivvunspell_Tests.xctest"
-               BlueprintName = "libdivvunspell_Tests"
-               ReferencedContainer = "container:libdivvunspell.xcodeproj">
+               BuildableName = "DivvunSpell_Tests.xctest"
+               BlueprintName = "DivvunSpell_Tests"
+               ReferencedContainer = "container:DivvunSpell.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -48,9 +48,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "607FACE41AFB9204008FA782"
-               BuildableName = "libdivvunspell_Tests.xctest"
-               BlueprintName = "libdivvunspell_Tests"
-               ReferencedContainer = "container:libdivvunspell.xcodeproj">
+               BuildableName = "DivvunSpell_Tests.xctest"
+               BlueprintName = "DivvunSpell_Tests"
+               ReferencedContainer = "container:DivvunSpell.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -58,9 +58,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "libdivvunspell_Example.app"
-            BlueprintName = "libdivvunspell_Example"
-            ReferencedContainer = "container:libdivvunspell.xcodeproj">
+            BuildableName = "DivvunSpell_Example.app"
+            BlueprintName = "DivvunSpell_Example"
+            ReferencedContainer = "container:DivvunSpell.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -82,9 +82,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "libdivvunspell_Example.app"
-            BlueprintName = "libdivvunspell_Example"
-            ReferencedContainer = "container:libdivvunspell.xcodeproj">
+            BuildableName = "DivvunSpell_Example.app"
+            BlueprintName = "DivvunSpell_Example"
+            ReferencedContainer = "container:DivvunSpell.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -101,9 +101,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "libdivvunspell_Example.app"
-            BlueprintName = "libdivvunspell_Example"
-            ReferencedContainer = "container:libdivvunspell.xcodeproj">
+            BuildableName = "DivvunSpell_Example.app"
+            BlueprintName = "DivvunSpell_Example"
+            ReferencedContainer = "container:DivvunSpell.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

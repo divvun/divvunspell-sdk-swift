@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import libdivvunspell
+import DivvunSpell
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
