@@ -30,7 +30,7 @@ TODO: Add long description of the pod here.
   s.ios.deployment_target = '8.0'
   s.pod_target_xcconfig = {
     'CARGO_HOME': "$(HOME)/.cargo",
-    'CARGO_FEATURES': "ffi",
+    'CARGO_FEATURES': "internal_ffi",
     'OTHER_LDFLAGS': '-ldivvunspell',
     'ENABLE_BITCODE': 'NO'
   }
@@ -57,7 +57,7 @@ TODO: Add long description of the pod here.
     }
   ]
   s.preserve_paths = "DivvunSpell/divvunspell"
-  s.source_files = 'DivvunSpell/Classes/**/*'
+  s.source_files = 'DivvunSpell/Classes/**/*', 'FlatBuffers/*'
   s.ios.vendored_libraries = 'DivvunSpell/divvunspell/target/universal/release/DivvunSpell.a'
   s.macos.vendored_libraries = 'DivvunSpell/divvunspell/target/release/DivvunSpell.a'
   s.public_header_files = 'DivvunSpell/Classes/**/*.h'
