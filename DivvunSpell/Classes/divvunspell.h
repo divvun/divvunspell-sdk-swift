@@ -17,7 +17,7 @@ extern "C" {
 
 // Rust FFI required types
 typedef struct rust_bool_s {
-    uint8_t internal_value
+    uint8_t internal_value;
 } rust_bool_t;
 
 typedef uintptr_t rust_usize_t;
@@ -131,7 +131,7 @@ extern void
 cursed_vec_free(rust_slice_t value);
 
 extern void
-divvun_word_context_free(void *_Nonnull ptr);
+divvun_fbs_free(rust_slice_t value);
 
 extern rust_slice_t
 divvun_cursor_context(rust_slice_t left, rust_slice_t right, ERR_CALLBACK);

@@ -76,25 +76,36 @@ extension rust_slice_t: Collection {
     }
 }
 
-extension rust_slice_t {
+extension Sequence where Self.Element == String {
     @inlinable
-    static func from(pointer: UnsafeBufferPointer<UInt8>) -> rust_slice_t {
-        let raw = UnsafeMutableRawPointer(mutating: pointer.baseAddress!)
-        return rust_slice_t(data: raw, len: rust_usize_t(pointer.count))
+    func withRustSlices<T>(callback: ([rust_slice_t]) -> T) -> T {
+        let strings = self.map { $0.ensureContiguous() }
+        let slices = strings.map { $0.withRustSlice(callback: { $0 }) }
+        return callback(slices)
+    }
+}
+
+extension String {
+    @inlinable
+    func ensureContiguous() -> String {
+        if self.isContiguousUTF8 {
+            return self
+        } else {
+            var copied = self
+            copied.makeContiguousUTF8()
+            return copied
+        }
     }
     
     @inlinable
-    static func from(string: String) -> rust_slice_t {
-        if string.isContiguousUTF8 {
-            return string.utf8.withContiguousStorageIfAvailable {
-                return Self.from(pointer: $0)
-            }!
-        } else {
-            var copiedString = string
-            return copiedString.withUTF8 {
-                return Self.from(pointer: $0)
-            }
-        }
+    func withRustSlice<T>(callback: (rust_slice_t) -> T) -> T {
+        let value = self.ensureContiguous()
+        
+        return value.utf8.withContiguousStorageIfAvailable { pointer in
+            let raw = UnsafeMutableRawPointer(mutating: pointer.baseAddress!)
+            let slice = rust_slice_t(data: raw, len: rust_usize_t(pointer.count))
+            return callback(slice)
+        }!
     }
 }
 
@@ -123,7 +134,12 @@ fileprivate let errCallback: @convention(c) (UnsafeMutableRawPointer?, rust_usiz
     }
 }
 
-public class ThfstChunkedBoxSpeller {
+public protocol Speller {
+    func isCorrect(word: String) throws -> Bool
+    func suggest(word: String) throws -> [String]
+}
+
+public class ThfstChunkedBoxSpeller: Speller {
     private let handle: UnsafeRawPointer
     
     fileprivate init(handle: UnsafeRawPointer) {
@@ -131,15 +147,20 @@ public class ThfstChunkedBoxSpeller {
     }
     
     public func isCorrect(word: String) throws -> Bool {
-        let result = divvun_thfst_chunked_box_speller_is_correct(
-            self.handle, rust_slice_t.from(string: word), errCallback)
+        let result = word.withRustSlice(callback: { slice in
+            divvun_thfst_chunked_box_speller_is_correct(
+                self.handle, slice, errCallback)
+        })
+        
         try assertNoError()
         return result.value
     }
     
     public func suggest(word: String) throws -> [String] {
-        let suggestions = divvun_thfst_chunked_box_speller_suggest(
-            handle, rust_slice_t.from(string: word), errCallback)
+        let suggestions = word.withRustSlice(callback: { slice in
+            divvun_thfst_chunked_box_speller_suggest(
+                handle, slice, errCallback)
+        })
         
         try assertNoError()
         
@@ -163,22 +184,28 @@ public class ThfstChunkedBoxSpeller {
     }
 }
 
-public class HfstZipSpeller {
+public class HfstZipSpeller: Speller {
     private let handle: UnsafeRawPointer
-    
+
     fileprivate init(handle: UnsafeRawPointer) {
         self.handle = handle
     }
     
     public func isCorrect(word: String) throws -> Bool {
-        let result = divvun_hfst_zip_speller_is_correct(
-            self.handle, rust_slice_t.from(string: word), errCallback)
+        let result = word.withRustSlice(callback: { slice in
+            divvun_hfst_zip_speller_is_correct(
+                self.handle, slice, errCallback)
+        })
+        
         try assertNoError()
         return result.value
     }
     
     public func suggest(word: String) throws -> [String] {
-        let suggestions = divvun_hfst_zip_speller_suggest(handle, rust_slice_t.from(string: word), errCallback)
+        let suggestions = word.withRustSlice(callback: { slice in
+            divvun_hfst_zip_speller_suggest(
+                handle, slice, errCallback)
+        })
         
         try assertNoError()
         
@@ -204,18 +231,20 @@ public class HfstZipSpeller {
 
 public class ThfstChunkedBoxSpellerArchive {
     private let handle: UnsafeRawPointer
-    
+
     private init(handle: UnsafeRawPointer) {
         self.handle = handle
     }
-    
+
     public static func open(path: String) throws -> ThfstChunkedBoxSpellerArchive {
-        let handle = divvun_thfst_chunked_box_speller_archive_open(
-                rust_slice_t.from(string: path), errCallback)
+        let handle = path.withRustSlice(callback: { slice in
+            divvun_thfst_chunked_box_speller_archive_open(
+                slice, errCallback)
+        })
         try assertNoError()
         return ThfstChunkedBoxSpellerArchive(handle: handle)
     }
-    
+
     public func speller() throws -> ThfstChunkedBoxSpeller {
         let spellerHandle = divvun_thfst_chunked_box_speller_archive_speller(self.handle, errCallback)
         try assertNoError()
@@ -225,26 +254,28 @@ public class ThfstChunkedBoxSpellerArchive {
 
 public class HfstZipSpellerArchive {
     private let handle: UnsafeRawPointer
-    
+
     public let locale: String
-    
+
     private init(handle: UnsafeRawPointer, locale: String) {
         self.handle = handle
         self.locale = locale
     }
-    
+
     public static func open(path: String) throws -> HfstZipSpellerArchive {
-        let handle = divvun_hfst_zip_speller_archive_open(rust_slice_t.from(string: path), errCallback)
+        let handle = path.withRustSlice(callback: { slice in
+            divvun_hfst_zip_speller_archive_open(slice, errCallback)
+        })
         try assertNoError()
-        
+
         let ptr = divvun_hfst_zip_speller_archive_locale(handle, errCallback)
         try assertNoError()
         let locale = String(bytes: ptr, encoding: .utf8)!
         cursed_string_free(ptr)
-        
+
         return HfstZipSpellerArchive(handle: handle, locale: locale)
     }
-    
+
     public func speller() throws -> HfstZipSpeller {
         let spellerHandle = divvun_hfst_zip_speller_archive_speller(self.handle, errCallback)
         try assertNoError()
@@ -262,16 +293,18 @@ public struct CursorContext {
 
 public extension CursorContext {
     static func from(leftPart: String, rightPart: String) throws -> CursorContext {
-        let slice = divvun_cursor_context(
-            rust_slice_t.from(string: leftPart),
-            rust_slice_t.from(string: rightPart),
-            errCallback)
+        let slice = leftPart.withRustSlice(callback: { leftPartSlice in
+            rightPart.withRustSlice(callback: { rightPartSlice in
+                divvun_cursor_context(leftPartSlice, rightPartSlice, errCallback)
+            })
+        })
+        
         try assertNoError()
         defer {
-            cursed_vec_free(slice)
+             cursed_vec_free(slice)
         }
         
-        let buf = ByteBuffer(bytesNoCopy: slice.data!, byteCount: Int(slice.len))
+        let buf = ByteBuffer(bytes: Array(slice))
         let wc = WordContext.getRootAsWordContext(bb: buf)
         
         guard let current = wc.current else {
