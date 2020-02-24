@@ -80,7 +80,7 @@ extension Sequence where Self.Element == String {
     @inlinable
     func withRustSlices<T>(callback: ([rust_slice_t]) -> T) -> T {
         let strings = self.map { $0.ensureContiguous() }
-        let slices = strings.map { $0.withRustSlice(callback: { $0 }) }
+        let slices = strings.compactMap { $0.withRustSlice(callback: { $0 }) }
         return callback(slices)
     }
 }
@@ -98,14 +98,14 @@ extension String {
     }
     
     @inlinable
-    func withRustSlice<T>(callback: (rust_slice_t) -> T) -> T {
+    func withRustSlice<T>(callback: (rust_slice_t) -> T) -> T? {
         let value = self.ensureContiguous()
         
         return value.utf8.withContiguousStorageIfAvailable { pointer in
             let raw = UnsafeMutableRawPointer(mutating: pointer.baseAddress!)
             let slice = rust_slice_t(data: raw, len: rust_usize_t(pointer.count))
             return callback(slice)
-        }!
+        }
     }
 }
 
@@ -153,7 +153,7 @@ public class ThfstChunkedBoxSpeller: Speller {
         })
         
         try assertNoError()
-        return result.value
+        return result!.value
     }
     
     public func suggest(word: String) throws -> [String] {
@@ -164,17 +164,17 @@ public class ThfstChunkedBoxSpeller: Speller {
         
         try assertNoError()
         
-        if suggestions.data == nil {
+        if suggestions!.data == nil {
             return []
         }
         
-        let length = divvun_vec_suggestion_len(suggestions, errCallback)
+        let length = divvun_vec_suggestion_len(suggestions!, errCallback)
         try assertNoError()
         
         var out = [String]()
         
         for i in 0..<length {
-            let ptr = divvun_vec_suggestion_get_value(suggestions, i, errCallback)
+            let ptr = divvun_vec_suggestion_get_value(suggestions!, i, errCallback)
             try assertNoError()
             out.append(String(bytes: ptr, encoding: .utf8)!)
             cursed_string_free(ptr)
@@ -198,7 +198,7 @@ public class HfstZipSpeller: Speller {
         })
         
         try assertNoError()
-        return result.value
+        return result!.value
     }
     
     public func suggest(word: String) throws -> [String] {
@@ -209,17 +209,17 @@ public class HfstZipSpeller: Speller {
         
         try assertNoError()
         
-        if suggestions.data == nil {
+        if suggestions!.data == nil {
             return []
         }
         
-        let length = divvun_vec_suggestion_len(suggestions, errCallback)
+        let length = divvun_vec_suggestion_len(suggestions!, errCallback)
         try assertNoError()
         
         var out = [String]()
         
         for i in 0..<length {
-            let ptr = divvun_vec_suggestion_get_value(suggestions, i, errCallback)
+            let ptr = divvun_vec_suggestion_get_value(suggestions!, i, errCallback)
             try assertNoError()
             out.append(String(bytes: ptr, encoding: .utf8)!)
             cursed_string_free(ptr)
@@ -242,7 +242,7 @@ public class ThfstChunkedBoxSpellerArchive {
                 slice, errCallback)
         })
         try assertNoError()
-        return ThfstChunkedBoxSpellerArchive(handle: handle)
+        return ThfstChunkedBoxSpellerArchive(handle: handle!)
     }
 
     public func speller() throws -> ThfstChunkedBoxSpeller {
@@ -268,12 +268,12 @@ public class HfstZipSpellerArchive {
         })
         try assertNoError()
 
-        let ptr = divvun_hfst_zip_speller_archive_locale(handle, errCallback)
+        let ptr = divvun_hfst_zip_speller_archive_locale(handle!, errCallback)
         try assertNoError()
         let locale = String(bytes: ptr, encoding: .utf8)!
         cursed_string_free(ptr)
 
-        return HfstZipSpellerArchive(handle: handle, locale: locale)
+        return HfstZipSpellerArchive(handle: handle!, locale: locale)
     }
 
     public func speller() throws -> HfstZipSpeller {
@@ -301,10 +301,10 @@ public extension CursorContext {
         
         try assertNoError()
         defer {
-             cursed_vec_free(slice)
+             cursed_vec_free(slice!!)
         }
         
-        let buf = ByteBuffer(bytes: Array(slice))
+        let buf = ByteBuffer(bytes: Array(slice!!))
         let wc = WordContext.getRootAsWordContext(bb: buf)
         
         guard let current = wc.current else {

@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'DivvunSpell'
-  s.version          = '0.2.0'
+  s.version          = '0.2.1'
   s.summary          = 'Swift SDK for DivvunSpell.'
   s.swift_versions = "5.0"
 # This description is used to generate tags and improve search results.
