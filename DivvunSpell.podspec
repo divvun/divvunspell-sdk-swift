@@ -29,16 +29,16 @@ TODO: Add long description of the pod here.
   s.macos.deployment_target = '10.10'
   s.ios.deployment_target = '8.0'
   s.pod_target_xcconfig = {
-    'CARGO_HOME': "$(HOME)/.cargo",
-    'CARGO_FEATURES': "internal_ffi",
-    'OTHER_LDFLAGS': '-ldivvunspell',
-    'ENABLE_BITCODE': 'NO'
+    'CARGO_HOME' => "$(HOME)/.cargo",
+    'CARGO_FEATURES' => "internal_ffi",
+    'OTHER_LDFLAGS' => '-ldivvunspell',
+    'ENABLE_BITCODE' => 'NO'
   }
   s.macos.pod_target_xcconfig = {
-    'LIBRARY_SEARCH_PATHS': '"${PODS_TARGET_SRCROOT}/DivvunSpell/divvunspell/target/release"'
+    'LIBRARY_SEARCH_PATHS' => '"${PODS_TARGET_SRCROOT}/DivvunSpell/divvunspell/target/release"'
   }
   s.ios.pod_target_xcconfig = {
-    'LIBRARY_SEARCH_PATHS': '"${PODS_TARGET_SRCROOT}/DivvunSpell/divvunspell/target/universal/release"'
+    'LIBRARY_SEARCH_PATHS' => '"${PODS_TARGET_SRCROOT}/DivvunSpell/divvunspell/target/universal/release"'
   }
   s.ios.script_phases = [
     {
