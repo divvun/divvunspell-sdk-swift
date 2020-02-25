@@ -287,6 +287,7 @@ public struct CursorContext {
     public let secondBefore: (UInt, String)?
     public let firstBefore: (UInt, String)?
     public let current: (UInt, String)
+    public let currentOffset: Int
     public let firstAfter: (UInt, String)?
     public let secondAfter: (UInt, String)?
 }
@@ -306,11 +307,13 @@ public extension CursorContext {
         
         let buf = ByteBuffer(bytes: Array(slice!!))
         let wc = WordContext.getRootAsWordContext(bb: buf)
+        let offset = getCurrentOffsetFrom(leftPart: leftPart, rightPart: rightPart)
         
         guard let current = wc.current else {
             return CursorContext(secondBefore: nil,
                                  firstBefore: nil,
                                  current: (0, ""),
+                                 currentOffset: offset,
                                  firstAfter: nil,
                                  secondAfter: nil)
         }
@@ -318,14 +321,58 @@ public extension CursorContext {
         return CursorContext(secondBefore: wc.secondBefore?.asTuple(),
                              firstBefore: wc.firstBefore?.asTuple(),
                              current: current.asTuple(),
+                             currentOffset: offset,
                              firstAfter: wc.firstAfter?.asTuple(),
                              secondAfter: wc.secondAfter?.asTuple())
+    }
+
+    static func getCurrentOffsetFrom(leftPart: String, rightPart: String) -> Int {
+        var leftCurrentChunk: String.SubSequence?
+        var rightCurrentChunk: String.SubSequence?
+
+        var currentWord: String
+
+        // Build current word
+        let currentLeftIndex = leftPart.lastIndex(where: { $0 == " " || $0 == "\n" })
+        if let currentLeftIndex = currentLeftIndex {
+            leftCurrentChunk = leftPart.suffix(after: currentLeftIndex)
+        } else {
+            leftCurrentChunk = leftPart.suffix(from: leftPart.startIndex)
+        }
+
+        let currentRightIndex = rightPart.firstIndex(where: { $0 == " " || $0 == "\n" }) ?? rightPart.endIndex
+        rightCurrentChunk = rightPart.prefix(upTo: currentRightIndex)
+
+        var offset: Int = 0
+        if let left = leftCurrentChunk, let right = rightCurrentChunk {
+            currentWord = "\(left)\(right)"
+            offset = left.count
+        } else if let left = leftCurrentChunk {
+            currentWord = String(left)
+            offset = currentWord.count
+        } else if let right = rightCurrentChunk {
+            currentWord = String(right)
+        } else {
+            currentWord = ""
+        }
+
+        return offset
     }
 }
 
 fileprivate extension IndexedWord {
     func asTuple() -> (UInt, String) {
         return (UInt(self.index), self.value ?? "")
+    }
+}
+
+extension String {
+    func suffix(after index: String.Index) -> String.SubSequence {
+        if index >= endIndex {
+            return suffix(from: endIndex)
+        }
+
+        return suffix(from: self.index(after: index))
     }
 }
 
