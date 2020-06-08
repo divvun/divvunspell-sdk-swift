@@ -136,6 +136,9 @@ divvun_fbs_free(rust_slice_t value);
 extern rust_slice_t
 divvun_cursor_context(rust_slice_t left, rust_slice_t right, ERR_CALLBACK);
 
+extern void
+divvun_enable_logging();
+
 //extern void *_Nonnull
 //divvun_word_bound_indices(rust_slice_t utf8_string);
 //

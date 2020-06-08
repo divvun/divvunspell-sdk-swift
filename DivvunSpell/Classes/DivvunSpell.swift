@@ -11,6 +11,10 @@ public struct DivvunSpellError: Error {
     public let message: String
 }
 
+public func divvunEnableLogging() {
+    divvun_enable_logging()
+}
+
 private func assertNoError() throws {
     if let errMsg = err {
         let error = DivvunSpellError(message: errMsg)
