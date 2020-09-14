@@ -1,4 +1,6 @@
-# DivvunSpell
+# DivvunSpell-Swift
+
+A Swift wrapper around Divvunspell.
 
 ## Example
 
