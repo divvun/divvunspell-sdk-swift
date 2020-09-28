@@ -380,6 +380,41 @@ extension String {
     }
 }
 
+public class WordIndices {
+    public typealias Element = (UInt64, String)
+
+    private let string: [CChar]
+    private let handle: UnsafeMutableRawPointer
+
+    fileprivate init(_ string: String) {
+        self.string = string.cString(using: .utf8)!
+        self.handle = divvun_word_indices(&self.string)
+    }
+
+    public mutating func next() -> (UInt64, String)? {
+        var index: UInt64 = 0
+        var cString = UnsafeMutablePointer<CChar>.allocate(capacity: 0)
+
+        if divvun_word_indices_next(handle, &index, &cString) == 0 {
+            return nil
+        }
+
+        defer { divvun_cstr_free(cString) }
+        let word = String(cString: cString)
+        return (index, word)
+    }
+
+    deinit {
+        divvun_word_indices_free(self.handle)
+    }
+}
+
+public extension String {
+    func wordIndices() -> WordIndices {
+        return WordIndices(self)
+    }
+}
+
 //public struct WordBoundIndices: IteratorProtocol, Sequence {
 //    public typealias Element = (UInt64, String)
 //

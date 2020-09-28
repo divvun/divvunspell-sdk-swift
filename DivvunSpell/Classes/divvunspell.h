@@ -139,16 +139,19 @@ divvun_cursor_context(rust_slice_t left, rust_slice_t right, ERR_CALLBACK);
 extern void
 divvun_enable_logging();
 
-//extern void *_Nonnull
-//divvun_word_bound_indices(rust_slice_t utf8_string);
-//
-//extern rust_bool_t
-//divvun_word_bound_indices_next(const void *_Nonnull handle,
-//                               uint64_t *_Nonnull out_index,
-//                               char *_Nonnull *_Nonnull out_string);
-//
-//extern void
-//word_bound_indices_free(void *_Nonnull handle);
+extern void *_Nonnull
+divvun_word_indices(rust_slice_t utf8_string);
+
+extern rust_bool_t
+divvun_word_indices_next(const void *_Nonnull handle,
+                         uint64_t *_Nonnull out_index,
+                         char *_Nonnull *_Nonnull out_string);
+
+extern void
+divvun_word_indices_free(void *_Nonnull handle);
+
+extern void
+divvun_cstr_free(char *_Nonnull cstr);
 
 #ifdef __cplusplus
 }
