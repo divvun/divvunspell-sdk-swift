@@ -140,7 +140,7 @@ extern void
 divvun_enable_logging();
 
 extern void *_Nonnull
-divvun_word_indices(rust_slice_t utf8_string);
+divvun_word_indices(const char *_Nonnull utf8_string);
 
 extern rust_bool_t
 divvun_word_indices_next(const void *_Nonnull handle,

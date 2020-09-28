@@ -380,7 +380,7 @@ extension String {
     }
 }
 
-public class WordIndices {
+public class WordIndices: IteratorProtocol, Sequence {
     public typealias Element = (UInt64, String)
 
     private let string: [CChar]
@@ -391,11 +391,11 @@ public class WordIndices {
         self.handle = divvun_word_indices(&self.string)
     }
 
-    public mutating func next() -> (UInt64, String)? {
+    public func next() -> (UInt64, String)? {
         var index: UInt64 = 0
         var cString = UnsafeMutablePointer<CChar>.allocate(capacity: 0)
 
-        if divvun_word_indices_next(handle, &index, &cString) == 0 {
+        if !divvun_word_indices_next(handle, &index, &cString).value {
             return nil
         }
 
