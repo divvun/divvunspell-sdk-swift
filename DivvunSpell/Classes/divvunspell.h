@@ -125,10 +125,10 @@ divvun_vec_suggestion_get_value(
     ERR_CALLBACK);
 
 extern void
-cursed_string_free(rust_slice_t value);
+cffi_string_free(rust_slice_t value);
 
 extern void
-cursed_vec_free(rust_slice_t value);
+cffi_vec_free(rust_slice_t value);
 
 extern void
 divvun_fbs_free(rust_slice_t value);

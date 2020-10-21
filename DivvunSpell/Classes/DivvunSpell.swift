@@ -181,7 +181,7 @@ public class ThfstChunkedBoxSpeller: Speller {
             let ptr = divvun_vec_suggestion_get_value(suggestions!, i, errCallback)
             try assertNoError()
             out.append(String(bytes: ptr, encoding: .utf8)!)
-            cursed_string_free(ptr)
+            cffi_string_free(ptr)
         }
         
         return out
@@ -226,7 +226,7 @@ public class HfstZipSpeller: Speller {
             let ptr = divvun_vec_suggestion_get_value(suggestions!, i, errCallback)
             try assertNoError()
             out.append(String(bytes: ptr, encoding: .utf8)!)
-            cursed_string_free(ptr)
+            cffi_string_free(ptr)
         }
         
         return out
@@ -275,7 +275,7 @@ public class HfstZipSpellerArchive {
         let ptr = divvun_hfst_zip_speller_archive_locale(handle!, errCallback)
         try assertNoError()
         let locale = String(bytes: ptr, encoding: .utf8)!
-        cursed_string_free(ptr)
+        cffi_string_free(ptr)
 
         return HfstZipSpellerArchive(handle: handle!, locale: locale)
     }
@@ -306,7 +306,7 @@ public extension CursorContext {
         
         try assertNoError()
         defer {
-             cursed_vec_free(slice!!)
+             cffi_vec_free(slice!!)
         }
         
         let buf = ByteBuffer(bytes: Array(slice!!))
@@ -426,7 +426,7 @@ public extension String {
 //            return nil
 //        }
 //
-//        defer { cursed_string_free(cString) }
+//        defer { cffi_string_free(cString) }
 //        let word = String(cString: cString)
 //        return (index, word)
 //    }
