@@ -1,0 +1,15 @@
+[workspace]
+members = [
+  "divvunspell",
+  "accuracy",
+  "divvunspell-bin",
+  "thfst-tools",
+]
+
+[profile.dev]
+opt-level = 1
+
+[profile.release]
+debug = true
+codegen-units = 1
+lto = "fat"
