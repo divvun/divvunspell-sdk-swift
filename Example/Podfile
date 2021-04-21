@@ -1,6 +1,0 @@
-use_frameworks!
-target 'DivvunSpell_Tests' do
-  pod 'DivvunSpell', :path => '../'
-  
-  
-end
