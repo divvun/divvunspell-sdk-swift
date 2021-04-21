@@ -1,0 +1,2 @@
+[alias]
+accuracy-test = "run --bin accuracy --release"
