@@ -27,6 +27,11 @@ typedef struct rust_slice_s {
     rust_usize_t len;
 } rust_slice_t;
 
+typedef struct rust_trait_object_s {
+    rust_usize_t data;
+    rust_usize_t vtable;
+} rust_trait_object_t;
+
 #define ERR_CALLBACK void (*_Nonnull exception)(void *_Nullable, rust_usize_t)
 
 struct CaseHandlingConfig {
@@ -43,74 +48,28 @@ struct SpellerConfig {
     rust_usize_t node_pool_size;
 };
 
-extern const void *_Nonnull
-divvun_thfst_chunked_box_speller_archive_open(rust_slice_t path, ERR_CALLBACK);
+extern const rust_trait_object_t
+divvun_speller_archive_open(rust_slice_t path, ERR_CALLBACK);
 
-extern const void *_Nonnull
-divvun_thfst_chunked_box_speller_archive_speller(const void *_Nonnull handle, ERR_CALLBACK);
+extern rust_slice_t
+divvun_speller_archive_locale(const rust_trait_object_t handle, ERR_CALLBACK);
+
+extern rust_trait_object_t
+divvun_speller_archive_speller(const rust_trait_object_t handle, ERR_CALLBACK);
 
 extern rust_bool_t
-divvun_thfst_chunked_box_speller_is_correct(const void *_Nonnull speller,
+divvun_speller_is_correct(const rust_trait_object_t speller,
                                             rust_slice_t word,
                                             ERR_CALLBACK);
 
 extern const rust_slice_t
-divvun_thfst_chunked_box_speller_suggest(const void *_Nonnull speller,
+divvun_speller_suggest(const rust_trait_object_t speller,
                                          rust_slice_t word,
                                          ERR_CALLBACK);
 
 extern rust_slice_t
-divvun_thfst_chunked_box_speller_suggest_with_config(
-    const void *_Nonnull speller,
-    rust_slice_t word,
-    struct SpellerConfig *_Nonnull config,
-    ERR_CALLBACK);
-
-extern const void *_Nonnull
-divvun_thfst_box_speller_archive_open(rust_slice_t path, ERR_CALLBACK);
-
-extern rust_slice_t
-divvun_thfst_box_speller_archive_speller(const void *_Nonnull handle, ERR_CALLBACK);
-
-extern rust_bool_t
-divvun_thfst_box_speller_is_correct(const void *_Nonnull speller,
-                                    rust_slice_t word,
-                                    ERR_CALLBACK);
-
-extern const rust_slice_t
-divvun_thfst_box_speller_suggest(const void *_Nonnull speller,
-                                 rust_slice_t word,
-                                 ERR_CALLBACK);
-
-extern rust_slice_t
-divvun_thfst_box_speller_suggest_with_config(
-    const void *_Nonnull speller,
-    rust_slice_t word,
-    struct SpellerConfig *_Nonnull config,
-    ERR_CALLBACK);
-
-extern const void *_Nonnull
-divvun_hfst_zip_speller_archive_open(rust_slice_t path, ERR_CALLBACK);
-
-extern const void *_Nonnull
-divvun_hfst_zip_speller_archive_speller(const void *_Nonnull handle, ERR_CALLBACK);
-
-extern rust_slice_t
-divvun_hfst_zip_speller_archive_locale(const void *_Nonnull handle, ERR_CALLBACK);
-
-extern rust_bool_t
-divvun_hfst_zip_speller_is_correct(const void *_Nonnull speller, 
-                                   rust_slice_t word,
-                                   ERR_CALLBACK);
-
-extern rust_slice_t
-divvun_hfst_zip_speller_suggest(const void *_Nonnull speller,
-                                rust_slice_t word,
-                                ERR_CALLBACK);
-
-extern rust_slice_t
-divvun_hfst_zip_speller_suggest_with_config(
-    const void *_Nonnull speller,
+divvun_speller_suggest_with_config(
+    const rust_trait_object_t speller,
     rust_slice_t word,
     struct SpellerConfig *_Nonnull config,
     ERR_CALLBACK);
