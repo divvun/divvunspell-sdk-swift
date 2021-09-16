@@ -1,6 +1,9 @@
 # OS X
 .DS_Store
 
+dist
+cargo-pod.tgz
+
 # Xcode
 build/
 *.pbxuser
