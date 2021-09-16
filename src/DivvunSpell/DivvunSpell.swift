@@ -7,17 +7,17 @@
 
 import Foundation
 
-public struct DivvunSpellError: Error {
-    public let message: String
-}
-
 public func divvunEnableLogging() {
     divvun_enable_logging()
 }
 
-private func assertNoError() throws {
+private func assertNoError(_ code: Int) throws {
     if let errMsg = err {
-        let error = DivvunSpellError(message: errMsg)
+        let error = NSError(
+            domain: "DivvunSpell",
+            code: code,
+            userInfo: [NSLocalizedDescriptionKey: errMsg]
+        )
         err = nil
         throw error
     }
@@ -151,7 +151,7 @@ public class Speller {
                 self.handle, slice, errCallback)
         })
         
-        try assertNoError()
+        try assertNoError(1)
         return result!.value
     }
     
@@ -161,20 +161,20 @@ public class Speller {
                 handle, slice, errCallback)
         })
         
-        try assertNoError()
+        try assertNoError(2)
         
         if suggestions!.data == nil {
             return []
         }
         
         let length = divvun_vec_suggestion_len(suggestions!, errCallback)
-        try assertNoError()
+        try assertNoError(3)
         
         var out = [String]()
         
         for i in 0..<length {
             let ptr = divvun_vec_suggestion_get_value(suggestions!, i, errCallback)
-            try assertNoError()
+            try assertNoError(4)
             out.append(String(bytes: ptr, encoding: .utf8)!)
             cffi_string_free(ptr)
         }
@@ -197,10 +197,10 @@ public class SpellerArchive {
             divvun_speller_archive_open(
                 slice, errCallback)
         })
-        try assertNoError()
+        try assertNoError(5)
         
         let ptr = divvun_speller_archive_locale(handle!, errCallback)
-        try assertNoError()
+        try assertNoError(6)
         let locale = String(bytes: ptr, encoding: .utf8)!
         cffi_string_free(ptr)
         
@@ -209,7 +209,7 @@ public class SpellerArchive {
 
     public func speller() throws -> Speller {
         let spellerHandle = divvun_speller_archive_speller(self.handle, errCallback)
-        try assertNoError()
+        try assertNoError(7)
         return Speller(handle: spellerHandle)
     }
 }
@@ -231,7 +231,7 @@ public extension CursorContext {
             })
         })
         
-        try assertNoError()
+        try assertNoError(8)
         defer {
              cffi_vec_free(slice!!)
         }
