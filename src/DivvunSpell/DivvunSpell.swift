@@ -138,6 +138,40 @@ fileprivate let errCallback: @convention(c) (UnsafeMutableRawPointer?, rust_usiz
     }
 }
 
+public class GPT2Model {
+    private let handle: UnsafeMutableRawPointer
+
+    fileprivate init(handle: UnsafeMutableRawPointer) {
+        self.handle = handle
+    }
+
+    public func suggest(word: String) throws -> [String] {
+        let suggestions = word.withRustSlice(callback: { slice in
+            divvun_ml_suggest(handle, slice)
+        })
+        
+        // try assertNoError(2)
+        
+        if suggestions!.data == nil {
+            return []
+        }
+        
+        let length = divvun_vec_suggestion_len(suggestions!, errCallback)
+        try assertNoError(103)
+        
+        var out = [String]()
+        
+        for i in 0..<length {
+            let ptr = divvun_vec_suggestion_get_value(suggestions!, i, errCallback)
+            try assertNoError(104)
+            out.append(String(bytes: ptr, encoding: .utf8)!)
+            cffi_string_free(ptr)
+        }
+        
+        return out
+    }
+}
+
 public class Speller {
     private let handle: rust_trait_object_t
     

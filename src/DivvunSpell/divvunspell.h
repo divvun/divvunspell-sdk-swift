@@ -112,6 +112,13 @@ divvun_word_indices_free(void *_Nonnull handle);
 extern void
 divvun_cstr_free(char *_Nonnull cstr);
 
+extern void *_Nonnull
+divvun_ml_load_model(rust_slice_t path);
+
+extern const rust_slice_t
+divvun_ml_suggest(const void *_Nonnull model,
+                  rust_slice_t word);
+
 #ifdef __cplusplus
 }
 #endif
