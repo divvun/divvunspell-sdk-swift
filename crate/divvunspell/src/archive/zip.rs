@@ -1,5 +1,5 @@
 use ::zip::{CompressionMethod, ZipArchive};
-use memmap::MmapOptions;
+use memmap2::MmapOptions;
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::Seek;
@@ -27,7 +27,7 @@ fn mmap_by_name<R: Read + Seek>(
     let mut index = archive.by_name(name)?;
 
     if index.compression() != CompressionMethod::Stored {
-        let tempdir = tempdir::TempDir::new("divvunspell")?;
+        let tempdir = tempfile::tempdir()?;
         let outpath = tempdir.path().join(index.mangled_name());
 
         let mut outfile = File::create(&outpath)?;
@@ -50,7 +50,7 @@ fn mmap_by_name<R: Read + Seek>(
         MmapOptions::new()
             .offset(index.data_start())
             .len(index.size() as usize)
-            .map(&zipfile)
+            .map(&*zipfile)
     };
 
     match mmap {
@@ -78,16 +78,16 @@ impl SpellerArchive for ZipSpellerArchive {
         let mut file = File::open(file_path).map_err(SpellerArchiveError::File)?;
 
         let metadata_mmap = mmap_by_name(&mut file, &mut archive, "index.xml")
-            .map_err(|e| SpellerArchiveError::Io("index.xml".into(), e))?;
+            .map_err(|e| SpellerArchiveError::Io("index.xml".into(), e.into()))?;
         let metadata = SpellerMetadata::from_bytes(&*metadata_mmap.map()).expect("meta");
 
         let acceptor_id = &metadata.acceptor.id;
         let errmodel_id = &metadata.errmodel.id;
 
         let acceptor_mmap = mmap_by_name(&mut file, &mut archive, &acceptor_id)
-            .map_err(|e| SpellerArchiveError::Io(acceptor_id.into(), e))?;
+            .map_err(|e| SpellerArchiveError::Io(acceptor_id.into(), e.into()))?;
         let errmodel_mmap = mmap_by_name(&mut file, &mut archive, &errmodel_id)
-            .map_err(|e| SpellerArchiveError::Io(errmodel_id.into(), e))?;
+            .map_err(|e| SpellerArchiveError::Io(errmodel_id.into(), e.into()))?;
         drop(archive);
 
         let acceptor = HfstTransducer::from_mapped_memory(acceptor_mmap.map());

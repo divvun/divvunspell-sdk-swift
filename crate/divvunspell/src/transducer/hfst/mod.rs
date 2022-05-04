@@ -7,7 +7,7 @@ use std::fmt;
 use std::path::Path;
 use std::sync::Arc;
 
-use memmap::Mmap;
+use memmap2::Mmap;
 
 use self::alphabet::TransducerAlphabetParser;
 use self::header::TransducerHeader;
@@ -102,7 +102,7 @@ impl<F: vfs::File> Transducer<F> for HfstTransducer<F> {
         P: AsRef<Path>,
         FS: Filesystem<File = F>,
     {
-        let file = fs.open(path).map_err(TransducerError::Io)?;
+        let file = fs.open_file(path).map_err(TransducerError::Io)?;
         let mmap = unsafe { file.memory_map() }.map_err(TransducerError::Memmap)?;
         Ok(HfstTransducer::from_mapped_memory(Arc::new(mmap)))
     }
