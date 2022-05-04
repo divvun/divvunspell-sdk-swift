@@ -1,10 +1,14 @@
 # DivvunSpell-Swift
 
-A Swift wrapper around Divvunspell.
+A Swift wrapper around DivvunSpell.
 
 ## Example
 
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
+To run the example, use `cargo-cocoapods`.
+
+```
+cargo pod example
+```
 
 ## Requirements
 
