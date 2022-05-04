@@ -1,4 +1,4 @@
-use memmap::Mmap;
+use memmap2::Mmap;
 use std::{ffi::OsString, path::Path, sync::Arc};
 
 pub mod boxf;
@@ -6,17 +6,22 @@ pub mod error;
 pub mod meta;
 pub mod zip;
 
-pub use self::boxf::BoxSpellerArchive;
-use self::meta::SpellerMetadata;
-pub use self::zip::ZipSpellerArchive;
-use self::{boxf::ThfstChunkedBoxSpellerArchive, error::SpellerArchiveError};
-use crate::speller::Speller;
+use error::PredictorArchiveError;
+
+pub use self::{boxf::BoxSpellerArchive, zip::ZipSpellerArchive};
+
+use self::{
+    boxf::ThfstChunkedBoxSpellerArchive,
+    error::SpellerArchiveError,
+    meta::{PredictorMetadata, SpellerMetadata},
+};
+use crate::{predictor::Predictor, speller::Speller};
 
 pub(crate) struct TempMmap {
     mmap: Arc<Mmap>,
 
     // Not really dead, needed to drop when TempMmap drops
-    _tempdir: tempdir::TempDir,
+    _tempdir: tempfile::TempDir,
 }
 
 pub(crate) enum MmapRef {
@@ -40,6 +45,15 @@ pub trait SpellerArchive {
 
     fn speller(&self) -> Arc<dyn Speller + Send + Sync>;
     fn metadata(&self) -> Option<&SpellerMetadata>;
+}
+
+pub trait PredictorArchive {
+    fn open(path: &Path, predictor_name: Option<&str>) -> Result<Self, PredictorArchiveError>
+    where
+        Self: Sized;
+
+    fn predictor(&self) -> Arc<dyn Predictor + Send + Sync>;
+    fn metadata(&self) -> Option<&PredictorMetadata>;
 }
 
 pub fn open<P>(path: P) -> Result<Arc<dyn SpellerArchive + Send + Sync>, SpellerArchiveError>

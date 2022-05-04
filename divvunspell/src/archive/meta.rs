@@ -8,6 +8,12 @@ pub struct SpellerMetadata {
     pub errmodel: SpellerMetadataErrmodel,
 }
 
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+pub struct PredictorMetadata {
+    #[serde(default)]
+    pub speller: bool,
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct SpellerTitle {
     pub lang: Option<String>,
@@ -49,6 +55,19 @@ impl std::str::FromStr for SpellerMetadata {
 
 impl SpellerMetadata {
     pub fn from_bytes(bytes: &[u8]) -> Result<SpellerMetadata, Error> {
+        let mut reader = ParserConfig::new()
+            .trim_whitespace(true)
+            .ignore_comments(true)
+            .coalesce_characters(true)
+            .create_reader(bytes)
+            .into_inner();
+
+        from_reader(&mut reader)
+    }
+}
+
+impl PredictorMetadata {
+    pub fn from_bytes(bytes: &[u8]) -> Result<PredictorMetadata, Error> {
         let mut reader = ParserConfig::new()
             .trim_whitespace(true)
             .ignore_comments(true)

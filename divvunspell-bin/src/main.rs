@@ -7,17 +7,24 @@ use std::{
 use gumdrop::Options;
 use serde::Serialize;
 
+#[cfg(feature = "gpt2")]
 use divvunspell::archive::{
-    boxf::ThfstBoxSpellerArchive, error::SpellerArchiveError, BoxSpellerArchive, SpellerArchive,
-    ZipSpellerArchive,
+    boxf::BoxGpt2PredictorArchive, error::PredictorArchiveError, PredictorArchive,
 };
-use divvunspell::speller::suggestion::Suggestion;
-use divvunspell::speller::{Speller, SpellerConfig};
-use divvunspell::tokenizer::Tokenize;
+
+use divvunspell::{
+    archive::{
+        boxf::ThfstBoxSpellerArchive, error::SpellerArchiveError, BoxSpellerArchive,
+        SpellerArchive, ZipSpellerArchive,
+    },
+    speller::{suggestion::Suggestion, Speller, SpellerConfig},
+    tokenizer::Tokenize,
+};
 
 trait OutputWriter {
     fn write_correction(&mut self, word: &str, is_correct: bool);
     fn write_suggestions(&mut self, word: &str, suggestions: &[Suggestion]);
+    fn write_predictions(&mut self, predictions: &[String]);
     fn finish(&mut self);
 }
 
@@ -39,6 +46,11 @@ impl OutputWriter for StdoutWriter {
         println!();
     }
 
+    fn write_predictions(&mut self, predictions: &[String]) {
+        println!("Predictions: ");
+        println!("{}", predictions.join(" "));
+    }
+
     fn finish(&mut self) {}
 }
 
@@ -52,18 +64,22 @@ struct SuggestionRequest {
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct JsonWriter {
-    results: Vec<SuggestionRequest>,
+    suggest: Vec<SuggestionRequest>,
+    predict: Option<Vec<String>>,
 }
 
 impl JsonWriter {
     pub fn new() -> JsonWriter {
-        JsonWriter { results: vec![] }
+        JsonWriter {
+            suggest: vec![],
+            predict: None,
+        }
     }
 }
 
 impl OutputWriter for JsonWriter {
     fn write_correction(&mut self, word: &str, is_correct: bool) {
-        self.results.push(SuggestionRequest {
+        self.suggest.push(SuggestionRequest {
             word: word.to_owned(),
             is_correct,
             suggestions: vec![],
@@ -71,8 +87,12 @@ impl OutputWriter for JsonWriter {
     }
 
     fn write_suggestions(&mut self, _word: &str, suggestions: &[Suggestion]) {
-        let i = self.results.len() - 1;
-        self.results[i].suggestions = suggestions.to_vec();
+        let i = self.suggest.len() - 1;
+        self.suggest[i].suggestions = suggestions.to_vec();
+    }
+
+    fn write_predictions(&mut self, predictions: &[String]) {
+        self.predict = Some(predictions.to_vec());
     }
 
     fn finish(&mut self) {
@@ -89,7 +109,7 @@ fn run(
     suggest_cfg: &SpellerConfig,
 ) {
     for word in words {
-        let is_correct = speller.clone().is_correct(&word);
+        let is_correct = speller.clone().is_correct_with_config(&word, &suggest_cfg);
         writer.write_correction(&word, is_correct);
 
         if is_suggesting && (is_always_suggesting || !is_correct) {
@@ -98,7 +118,6 @@ fn run(
         }
     }
 }
-
 #[derive(Debug, Options)]
 struct Args {
     #[options(help = "print help message")]
@@ -115,6 +134,9 @@ enum Command {
 
     #[options(help = "print input in word-separated tokenized form")]
     Tokenize(TokenizeArgs),
+
+    #[options(help = "predict next words using GPT2 model")]
+    Predict(PredictArgs),
 }
 
 #[derive(Debug, Options)]
@@ -160,6 +182,31 @@ struct TokenizeArgs {
     inputs: Vec<String>,
 }
 
+#[derive(Debug, Options)]
+struct PredictArgs {
+    #[options(help = "print help message")]
+    help: bool,
+
+    #[options(help = "BHFST archive to be used", required)]
+    archive: PathBuf,
+
+    #[options(
+        short = "n",
+        long = "name",
+        help = "Predictor name to use (default: gpt2_predictor)"
+    )]
+    predictor_name: Option<String>,
+
+    #[options(help = "whether suggestions should not be validated against a speller")]
+    disable_spelling_validation: bool,
+
+    #[options(no_short, long = "json", help = "output in JSON format")]
+    use_json: bool,
+
+    #[options(free, help = "text to be tokenized")]
+    inputs: Vec<String>,
+}
+
 fn tokenize(args: TokenizeArgs) -> anyhow::Result<()> {
     let inputs: String = if args.inputs.is_empty() {
         eprintln!("Reading from stdin...");
@@ -189,10 +236,14 @@ fn load_archive(path: &Path) -> Result<Box<dyn SpellerArchive>, SpellerArchiveEr
     let ext = match path.extension() {
         Some(v) => v,
         None => {
-            return Err(SpellerArchiveError::Io(path.to_string_lossy().to_string(), std::io::Error::new(
-                std::io::ErrorKind::Other,
-                "Unsupported archive (missing .zhfst or .bhfst)",
-            )))
+            return Err(SpellerArchiveError::Io(
+                path.to_string_lossy().to_string(),
+                std::io::Error::new(
+                    std::io::ErrorKind::Other,
+                    "Unsupported archive (missing .zhfst or .bhfst)",
+                )
+                .into(),
+            ))
         }
     };
 
@@ -215,10 +266,14 @@ fn load_archive(path: &Path) -> Result<Box<dyn SpellerArchive>, SpellerArchiveEr
         };
         Ok(Box::new(archive))
     } else {
-        Err(SpellerArchiveError::Io(path.to_string_lossy().to_string(), std::io::Error::new(
-            std::io::ErrorKind::Other,
-            "Unsupported archive (missing .zhfst or .bhfst)",
-        )))
+        Err(SpellerArchiveError::Io(
+            path.to_string_lossy().to_string(),
+            std::io::Error::new(
+                std::io::ErrorKind::Other,
+                "Unsupported archive (missing .zhfst or .bhfst)",
+            )
+            .into(),
+        ))
     }
 }
 
@@ -257,12 +312,16 @@ fn suggest(args: SuggestArgs) -> anyhow::Result<()> {
         io::stdin()
             .read_to_string(&mut buffer)
             .expect("reading stdin");
-        buffer.split(" ").map(|x| x.trim().to_string()).collect()
+        buffer
+            .trim()
+            .split('\n')
+            .map(|x| x.trim().to_string())
+            .collect()
     } else {
-        args.inputs.into_iter().map(|x| x.to_string()).collect()
+        args.inputs.into_iter().collect()
     };
 
-    let archive = load_archive(&args.archive).unwrap();
+    let archive = load_archive(&args.archive)?;
     let speller = archive.speller();
     run(
         speller,
@@ -278,6 +337,76 @@ fn suggest(args: SuggestArgs) -> anyhow::Result<()> {
     Ok(())
 }
 
+#[cfg(feature = "gpt2")]
+fn load_predictor_archive(
+    path: &Path,
+    name: Option<&str>,
+) -> Result<Box<dyn PredictorArchive>, PredictorArchiveError> {
+    let archive = BoxGpt2PredictorArchive::open(path, name)?;
+    let archive = Box::new(archive);
+    Ok(archive)
+}
+
+#[cfg(feature = "gpt2")]
+fn predict(args: PredictArgs) -> anyhow::Result<()> {
+    let raw_input = if args.inputs.is_empty() {
+        eprintln!("Reading from stdin...");
+        let mut buffer = String::new();
+        io::stdin()
+            .read_to_string(&mut buffer)
+            .expect("reading stdin");
+        buffer
+    } else {
+        args.inputs.join(" ")
+    };
+
+    let predictor_name = args.predictor_name.as_deref();
+    let archive = load_predictor_archive(&args.archive, predictor_name)?;
+    let predictor = archive.predictor();
+
+    let mut writer: Box<dyn OutputWriter> = if args.use_json {
+        Box::new(JsonWriter::new())
+    } else {
+        Box::new(StdoutWriter)
+    };
+
+    let suggest_cfg = SpellerConfig::default();
+
+    let predictions = predictor.predict(&raw_input);
+    writer.write_predictions(&predictions);
+
+    let has_speller = archive.metadata().map(|x| x.speller).unwrap_or(false);
+    if !args.disable_spelling_validation {
+        if !has_speller {
+            eprintln!("Error: requested spell checking but no speller present in archive!");
+        } else {
+            let speller_archive = load_archive(&args.archive)?;
+            let speller = speller_archive.speller();
+
+            for word in predictions {
+                let cleaned_str = word.as_str().word_indices();
+                for w in cleaned_str {
+                    let is_correct = speller.clone().is_correct_with_config(&w.1, &suggest_cfg);
+                    writer.write_correction(w.1, is_correct);
+                }
+            }
+        }
+    };
+
+    Ok(())
+}
+
+#[cfg(not(feature = "gpt2"))]
+fn predict(_args: PredictArgs) -> anyhow::Result<()> {
+    eprintln!("ERROR: DivvunSpell was built without GPT2 support.");
+    eprintln!("If you built this using cargo, re-run the build with the following:");
+    eprintln!("");
+    eprintln!("  cargo build --features gpt2");
+    eprintln!("");
+
+    std::process::exit(1);
+}
+
 fn main() -> anyhow::Result<()> {
     pretty_env_logger::init();
 
@@ -287,5 +416,6 @@ fn main() -> anyhow::Result<()> {
         None => Ok(()),
         Some(Command::Suggest(args)) => suggest(args),
         Some(Command::Tokenize(args)) => tokenize(args),
+        Some(Command::Predict(args)) => predict(args),
     }
 }
