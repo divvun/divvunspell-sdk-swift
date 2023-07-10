@@ -23,4 +23,5 @@ Pod::Spec.new { |spec|
   spec.source = {
     :http => 'https://github.com/divvun/divvunspell-sdk-swift/releases/download/v#{spec.version}/cargo-pod.tgz',
   }
+  spec.vendored_libraries = 'dist/aarch64-apple-ios/libdivvunspell.a'
 }
