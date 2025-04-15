@@ -315,7 +315,7 @@ public class WordIndices: IteratorProtocol, Sequence {
 
     fileprivate init(_ string: String) {
         self.string = string.cString(using: .utf8)!
-        self.handle = divvun_word_indices(&self.string)
+        self.handle = divvun_word_indices(self.string)
     }
 
     public func next() -> (UInt64, String)? {
