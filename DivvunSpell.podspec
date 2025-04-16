@@ -1,6 +1,6 @@
 Pod::Spec.new { |spec|
   spec.name = 'DivvunSpell'
-  spec.version = '1.0.0-beta.1'
+  spec.version = '1.0.0-beta.5'
   spec.summary = 'Spell checking library for ZHFST/BHFST spellers, with case handling and tokenization support.'
   spec.authors = {
     'Brendan Molloy' => 'brendan@bbqsrc.net',
